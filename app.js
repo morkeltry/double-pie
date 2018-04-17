@@ -1,55 +1,51 @@
-var minYear = d3.min(birthData, d => d.year);
-var width = 600;
-var height = 600;
-var yearData = birthData.filter(d => d.year === minYear);
 
-var continents = [];
-for (var i = 0; i < birthData.length; i++) {
-  var continent = birthData[i].continent;
-  if (continents.indexOf(continent) === -1) {
-    continents.push(continent);
-  }
+const minYear = d3.min (birthData, d=>d.year);
+const maxYear = d3.max (birthData, d=>d.year);
+const outerRadius = 350;
+const innerRadius = 100;
+
+
+
+const doUpdate = () => {
+  console.log (d3.event.target.value);
+
+  const thisYearData = birthData.filter( d=>
+    d.year == d3.event.target.value
+  );
+
+  const arcs = d3.pie()
+    .value (d => d.births)
+    (thisYearData);
+  console.log(arcs);
+
+  const path = d3.arc()
+    .outerRadius(outerRadius)
+    .innerRadius(innerRadius);
+  console.log(path);
+
+  const piePaths = d3.select ("#pie")
+      .selectAll("path")
+        // .data (thisYearData);
+
+  // piePaths
+  //   .data (arcs)
+  //   .exit()
+  //   .remove();
+
+  piePaths
+    .data (arcs)
+    .enter()
+    .append ("path")
+      .attr ("stroke-fill",'blue')
+      .attr ("d",path)
+
+  console.log(piePaths);
 }
 
-var colorScale = d3.scaleOrdinal()
-                   .domain(continents)
-                   .range(d3.schemeCategory10);
 
-d3.select('svg')
-    .attr('width', width)
-    .attr('height', height)
-  .append('g')
-    .attr('transform', 'translate(' + width / 2 + ', ' + height / 2 + ')')
-    .classed('chart', true);
-
-var arcs = d3.pie()
-             .value(d => d.births)
-             (yearData);
-
-var path = d3.arc()
-             .outerRadius(width / 2 - 10)
-             .innerRadius(width / 4);
-
-d3.select('.chart')
-  .selectAll('.arc')
-  .data(arcs)
-  .enter()
-  .append('path')
-    .classed('arc', true)
-    .attr('fill', d => colorScale(d.data.continent))
-    .attr('stroke', 'black')
-    .attr('d', path);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+d3.select("input")
+    .property("min", minYear)
+    .property("max", maxYear)
+    .property("value", minYear)
+    .on("change", doUpdate)
+;
