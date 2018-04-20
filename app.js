@@ -3,6 +3,7 @@ const minYear = d3.min (birthData, d=>d.year);
 const maxYear = d3.max (birthData, d=>d.year);
 const outerRadius = 350;
 const innerRadius = 100;
+const translation = `translate (${outerRadius+100},${outerRadius+100})`;
 
 
 
@@ -37,6 +38,7 @@ const doUpdate = () => {
     .enter()
     .append ("path")
       .attr ("stroke-fill",'blue')
+      .attr ("transform",translation)
       .attr ("d",path)
 
   console.log(piePaths);
