@@ -10,14 +10,16 @@ const keyByMonth = (d,idx) => {
     'July', 'August', 'September', 'October', 'November', 'December']
   let month = months.indexOf(d.month);
   let dateNumerical = d.year*100+month
-  console.log ('dateNumerical',dateNumerical);
-  console.log ('data',d);
   return dateNumerical;
-  };
+};
+
+const keyByRandom = (d,idx) => {
+  return Math.floor (Math.random()*12)
+};
 
 const doUpdate = () => {
   const inputValue = d3.event ? d3.event.target.value : '1967';
-  console.log ('inputValue',inputValue);
+  // console.log ('inputValue',inputValue);
 
   const thisYearData = birthData.filter( d=>
     d.year == inputValue
@@ -30,43 +32,32 @@ const doUpdate = () => {
     .sort ((a,b) => keyByMonth(a)-keyByMonth(b))
     (thisYearData);
 
-  console.log('arcs:',arcs);
-
   const path = d3.arc()
     .outerRadius(outerRadius)
     .innerRadius(innerRadius);
-  console.log('path from arc:',path);
 
   const fill = (d,i) =>
-    (d.data.births)%2? '#19cccc'
+    (keyByMonth(d.data))%2? '#19cccc'
     : '#e54c85'
 
   const piePaths = d3.select ("#pie")
       .selectAll("path")
+        .data (arcs)
 
-  console.log('paths:',piePaths);
-  console.log('updated:',  piePaths
-    .data (arcs,keyByMonth));
-  console.log('exit:',  piePaths
-    .data (arcs,keyByMonth)
-    .exit());
-  piePaths
-    .data (arcs,keyByMonth)
-    .exit()
-    .remove();
-  console.log('paths again:',piePaths);
+        //This VV part of the line caused paths bloat. Why was it in there?
+        // , d=>keyByMonth(d.data))
 
-// if (d3.event == null)
   piePaths
-    .data (arcs)
     .enter()
     .append ("path")
+      .attr ("id",  d=>keyByMonth(d.data))
       .attr ("stroke-fill",'blue')
       .attr ("transform",translation)
       .attr ("fill", fill)
       .attr ("d",path)
 
-  console.log('paths again again:',piePaths);
+    .merge (piePaths)
+      .attr ("d",path);
 }
 
 
