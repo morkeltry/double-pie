@@ -7,14 +7,17 @@
 </head>
 <body>
   <svg
-    id="pie"
     version="1.1"
     baseProfile="full"
     xmlns="http://www.w3.org/2000/svg"
-    width="800"
+    width="900"
     height="800" >
+    <g id="outer-pie">
+    </g>
+    <g id="inner-pie">
+    </g>
   </svg>
-  <input type="range" step="1" value="1967">
+  <input type="range" id="slider" step="1" value="1967">
   <script src="https://d3js.org/d3.v4.js"></script>
   <script src="birthData.js"></script>
   <script src="app.js"></script>
